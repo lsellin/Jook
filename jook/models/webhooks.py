@@ -5,10 +5,9 @@ import datetime
 import json
 import time
 from urllib.parse import urlparse
-
 from dicttoxml import dicttoxml
 import requests
-
+import base64
 from .data_sets import DeviceData, LocationData
 from ..exceptions import InvalidEvent, InvalidMode, InvalidURL
 
@@ -135,7 +134,7 @@ class BaseWebhook(object):
             attr_type=False
         )
 
-    def fire(self):
+    def fire(self, username="default", password="default"):
         """Send a POST request containing the object's data in the specified
         data type to the stored URL.
         """
@@ -146,7 +145,9 @@ class BaseWebhook(object):
                 else 'text/xml'
             )
         }
-
+        if (username != "default" and password !="default"):
+            hashed_creds = (base64.b64encode((username+':'+password).encode())).decode()
+            headers['Authorization']="Basic "+hashed_creds
         data = self.to_json() if self.mode == 'json' else self.to_xml()
 
         request = requests.post(self.url, headers=headers, data=data)
