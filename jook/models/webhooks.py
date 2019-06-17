@@ -4,7 +4,7 @@ This module contains the main classes that will be interacted with directly.
 import datetime
 import json
 import time
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from dicttoxml import dicttoxml
 import requests
